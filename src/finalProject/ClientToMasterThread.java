@@ -12,26 +12,26 @@ public class ClientToMasterThread extends Thread {
 
 	private ArrayList<String> jobsSentToMaster = new ArrayList<>();
 	String[] args;
-	ArrayList<String> globalJobsList;
+	ArrayList<String> jobs;
 	
 	
-	public ClientToMasterThread(ArrayList<String> globalJobsList, String[] args) {
-		this.globalJobsList = globalJobsList;
+	public ClientToMasterThread(ArrayList<String> jobs, String[] args) {
+		this.jobs = jobs;
 		this.args = args;
 	}
 	
 	@Override
 	public void run() {
 		try (Socket clientSocket = new Socket(args[0], Integer.parseInt(args[1]));
-				PrintWriter writeToMaster = new PrintWriter(clientSocket.getOutputStream(), true); // talks to server
-				BufferedReader responseReader = new BufferedReader(
-						new InputStreamReader(clientSocket.getInputStream()));) // reads from server
+				PrintWriter writeToMaster = new PrintWriter(clientSocket.getOutputStream(), true);) // talks to server;) // reads from server
 				{
-		while (globalJobsList.size() > 0 /*and the user is not done giving jobs*/) {
-			for (int i = 0; i < globalJobsList.size(); i++) {
-				if (!jobsSentToMaster.contains(globalJobsList.get(i))) {
-					writeToMaster.println(globalJobsList.get(i));
-					jobsSentToMaster.add(globalJobsList.get(i));
+			// while jobs are greater than 0- when the job gets finished, user will remove it from the arrayList
+			// and while the user is not done giving jobs because he could still give jobs even if they are all completed
+		while (jobs.size() > 0 || UserToClientThread.currentThread().isAlive()) {
+			for (int i = 0; i < jobs.size(); i++) {
+				if (!jobsSentToMaster.contains(jobs.get(i))) {
+					writeToMaster.println(jobs.get(i));
+					jobsSentToMaster.add(jobs.get(i));
 				}
 			}
 		}

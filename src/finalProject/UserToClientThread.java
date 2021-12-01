@@ -8,33 +8,37 @@ import java.util.ArrayList;
 
 public class UserToClientThread extends Thread {
 
-	ArrayList<String> jobsSentToClient;
 
-	public UserToClientThread(ArrayList<String> jobsSentToClient) {
-		this.jobsSentToClient = jobsSentToClient;
+	ArrayList<String> jobs = new ArrayList<String>();
+	
+	public UserToClientThread(ArrayList<String> jobs) {
+		this.jobs = jobs;
 	}
 
 	@Override
 	public void run() {
-		try(BufferedReader stdIn = new BufferedReader(
+		try(BufferedReader readsFromUser = new BufferedReader(
 						new InputStreamReader(System.in));)					   // reads from user)
 		{
 			String userInput;
 
 			int id = -1;
 			// go until user types done
-			while ((userInput = stdIn.readLine()) != "Done") {
+			while (!(userInput = readsFromUser.readLine()).equals("Done")) {
 
 				// input validation
-				/*while (userInput.toUpperCase() != "A" && userInput.toUpperCase() != "B") {
+				while (!userInput.toUpperCase().equals("A") && !userInput.toUpperCase().equals("B")) {
+
 					System.out.println("Please enter a job of type A or B.");
-					userInput = stdIn.readLine();
+					userInput = readsFromUser.readLine();
 				}
 
 				String job = userInput + String.valueOf(id++);
-				jobsSentToClient.add(job);*/
+				jobs.add(job);
+				
 				
 			}
+			this.stop();
 		} catch (IOException e) {
 			System.err.println("Couldn't get I/O for the connection.");
 			System.exit(1);

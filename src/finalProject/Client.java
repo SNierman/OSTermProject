@@ -31,16 +31,27 @@ public class Client {
 
 		String hostName = args[0];
 		int portNumber = Integer.parseInt(args[1]);
+		
+		ArrayList<String> jobs = new ArrayList<String>();
 
+		
+		ClientToMasterThread clientToMasterThread = new ClientToMasterThread(jobs, args);
+		UserToClientThread userToClientThread = new UserToClientThread(jobs);
+		
+		clientToMasterThread.start();
+		userToClientThread.start();
+	}
+}
+		/*
 		try (Socket clientSocket = new Socket(hostName, portNumber);
 				PrintWriter requestWriter = new PrintWriter(clientSocket.getOutputStream(), true); // talks to server
 				BufferedReader responseReader = new BufferedReader(
 						new InputStreamReader(clientSocket.getInputStream()));) // reads from server
-		{
+		
 		
 			// initialize empty array to the random length decided by rand (between 20 and 40 jobs)
-			Random rand = new Random(20);
-			int numJobs = rand.nextInt() + 20;
+			/*Random rand = new Random(20);
+			int numJobs = rand.nextInt(20);
 			int[] jobs = new int[numJobs];
 			Random randJobType = new Random(2);
 
@@ -64,5 +75,5 @@ public class Client {
 			System.err.println("Couldn't get I/O for the connection to " + hostName);
 			System.exit(1);
 		}
-	}
-}
+	}*/
+

@@ -7,7 +7,11 @@ public class Master {
 	//take in jobs
 	//assign it to slave
 	//alert client when job is done
-	
+	public static void main(String[] args) {
+		MasterToClientThread masterToClient = new MasterToClientThread();
+
+		masterToClient.start();
+		}
 	
 	//server to clients
 		//Socket clientSocket1 = serverSocket.accept();
