@@ -8,9 +8,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class MasterToClientThread extends Thread {
+public class MasterFromClientThread extends Thread {
 
-	private final String[] args = new String[] { "30121" };
+	private String[] args;
+	private ArrayList<String> jobsFromClient;
+	public MasterFromClientThread(ArrayList<String> jobsFromClient, String[] args) {
+		this.jobsFromClient = jobsFromClient;
+		this.args = args;
+	}
 
 	@Override
 	public void run() {
@@ -42,9 +47,10 @@ public class MasterToClientThread extends Thread {
 			jobsFromClient.add(job);
 				
 		}*/
-			String read;
-			while ((read = inFromClient.readLine()) != null) {
-				System.out.println(read);
+			String job;
+			while ((job = inFromClient.readLine()) != null) {
+				System.out.println("Master received: " + job);
+				jobsFromClient.add(job);
 			}
 	}
 		catch (IOException e) {

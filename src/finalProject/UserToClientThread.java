@@ -22,7 +22,7 @@ public class UserToClientThread extends Thread {
 		{
 			String userInput;
 
-			int id = -1;
+			int id = 0;
 			// go until user types done
 			while (!(userInput = readsFromUser.readLine()).equals("Done")) {
 

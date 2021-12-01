@@ -2,15 +2,20 @@ package finalProject;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Master {
 	//take in jobs
 	//assign it to slave
 	//alert client when job is done
 	public static void main(String[] args) {
-		MasterToClientThread masterToClient = new MasterToClientThread();
+		
+		ArrayList<String> jobsFromClient = new ArrayList<String>();
+		args = new String[] { "30121" };
+		
+		MasterFromClientThread masterFromClient = new MasterFromClientThread(jobsFromClient, args);
 
-		masterToClient.start();
+		masterFromClient.start();
 		}
 	
 	//server to clients

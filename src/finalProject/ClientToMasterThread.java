@@ -27,9 +27,10 @@ public class ClientToMasterThread extends Thread {
 				{
 			// while jobs are greater than 0- when the job gets finished, user will remove it from the arrayList
 			// and while the user is not done giving jobs because he could still give jobs even if they are all completed
-		while (jobs.size() > 0 || UserToClientThread.currentThread().isAlive()) {
+		while (jobs.size() > 0 || UserToClientThread.currentThread().isAlive()) { 
 			for (int i = 0; i < jobs.size(); i++) {
 				if (!jobsSentToMaster.contains(jobs.get(i))) {
+					System.out.println("Sending over job " + jobs.get(i));
 					writeToMaster.println(jobs.get(i));
 					jobsSentToMaster.add(jobs.get(i));
 				}
