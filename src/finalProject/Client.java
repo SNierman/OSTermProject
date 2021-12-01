@@ -15,7 +15,6 @@ public class Client {
 
 	// job has a type and ID
 	//practicing
-	//I'm also practicing!
 
 	/**
 	 * regular client NEEDS: Socket clientSocket = new Socket(hostName, portNumber);
