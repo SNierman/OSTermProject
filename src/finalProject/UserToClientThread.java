@@ -27,7 +27,7 @@ public class UserToClientThread extends Thread {
 			while (!(userInput = readsFromUser.readLine()).equals("Done")) {
 
 				// input validation
-				while (!userInput.toUpperCase().equals("A") && !userInput.toUpperCase().equals("B")) {
+				while (!userInput.toUpperCase().equals(Type.A.toString()) && !userInput.toUpperCase().equals(Type.B.toString())) {
 
 					System.out.println("Please enter a job of type A or B.");
 					userInput = readsFromUser.readLine();

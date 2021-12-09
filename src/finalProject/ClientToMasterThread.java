@@ -10,7 +10,9 @@ import java.util.ArrayList;
 
 public class ClientToMasterThread extends Thread {
 
+	//what is the point of this arrayList?
 	private ArrayList<String> jobsSentToMaster = new ArrayList<>();
+	
 	String[] args;
 	ArrayList<String> jobs;
 	

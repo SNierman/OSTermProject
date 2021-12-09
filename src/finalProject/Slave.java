@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class SlaveA {
+public class Slave {
 	//take jobs
 	//sleep
 	//alert when done

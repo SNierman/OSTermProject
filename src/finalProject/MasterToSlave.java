@@ -8,15 +8,22 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class MasterToSlaveA extends Thread {
+public class MasterToSlave extends Thread {
 	
 	private final String[] args;
 	private ArrayList<String> jobsFromClient = new ArrayList<String>();
-	private ArrayList<String> jobsSentToSlaves;
+	private WorkTimeCounter counterA;
+	private WorkTimeCounter counterB;
+	//private ArrayList<String> jobsSentToSlave;
+	private Type type;
 	
-	public MasterToSlaveA(ArrayList<String> jobsFromClient, String[] args) {
-		this.jobsFromClient = jobsFromClient;
+	public MasterToSlave(String[] args, WorkTimeCounter counterA, WorkTimeCounter counterB, ArrayList<String> jobsFromClient, Type type) {
 		this.args = args;
+		this.jobsFromClient = jobsFromClient;
+		this.counterA = counterA;
+		this.counterB = counterB;
+		this.type = type;
+		
 	}
 	
 	public void run() {
@@ -24,8 +31,24 @@ public class MasterToSlaveA extends Thread {
 				Socket clientSocket = serverSocket.accept();
 				PrintWriter responseWriter = new PrintWriter(clientSocket.getOutputStream(), true);) {//print to master
 			
+			String currJob; 
+			int timeDifferenceFromOtherSlave;
 			while (MasterFromClientThread.currentThread().isAlive()) {
+				
+				while(!jobsFromClient.isEmpty()) {
+					
+					currJob = jobsFromClient.get(0);
+					
+					if(currJob.substring(0,1).equals(this.type.toString())) {
+						
+						timeDifferenceFromOtherSlave = Math.abs(counterA.getWorkTimeRemaining() - counterB.getWorkTimeRemaining());
+						
+						
+					}
+				}
+				
 			}
+			
 			
 		} catch (IOException e) {
 			System.out.println(
