@@ -10,19 +10,21 @@ import java.util.ArrayList;
 
 public class MasterToSlave extends Thread {
 	
+	//we will try to make one thread that will send to both slaves
+	
 	private final String[] args;
 	private ArrayList<String> jobsFromClient = new ArrayList<String>();
 	private WorkTimeCounter counterA;
 	private WorkTimeCounter counterB;
 	//private ArrayList<String> jobsSentToSlave;
-	private Type type;
+	//private Type type;
 	
-	public MasterToSlave(String[] args, WorkTimeCounter counterA, WorkTimeCounter counterB, ArrayList<String> jobsFromClient, Type type) {
+	public MasterToSlave(String[] args, WorkTimeCounter counterA, WorkTimeCounter counterB, ArrayList<String> jobsFromClient) {
 		this.args = args;
 		this.jobsFromClient = jobsFromClient;
 		this.counterA = counterA;
 		this.counterB = counterB;
-		this.type = type;
+		//this.type = type;
 		
 	}
 	
@@ -33,24 +35,21 @@ public class MasterToSlave extends Thread {
 			
 			String currJob; 
 			int timeDifferenceFromOtherSlave;
-			while (MasterFromClientThread.currentThread().isAlive()) {
-				
-				while(!jobsFromClient.isEmpty()) {
-					
+			while (MasterFromClientThread.currentThread().isAlive() || !jobsFromClient.isEmpty()) {
 					currJob = jobsFromClient.get(0);
 					
-					if(currJob.substring(0,1).equals(this.type.toString())) {
+					//if(currJob.substring(0,1).equals(this.type.toString())) {
 						
 						timeDifferenceFromOtherSlave = Math.abs(counterA.getWorkTimeRemaining() - counterB.getWorkTimeRemaining());
 						
 						
 					}
-				}
+				
 				
 			}
 			
 			
-		} catch (IOException e) {
+		 catch (IOException e) {
 			System.out.println(
 					"Exception caught when trying to listen on port or listening for a connection");
 			System.out.println(e.getMessage());
