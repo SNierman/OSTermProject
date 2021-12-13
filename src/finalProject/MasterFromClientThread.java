@@ -25,7 +25,7 @@ public class MasterFromClientThread extends Thread {
 				//socket to connect to the client
 				Socket clientSocket = serverSocket.accept();
 				//reader/writer from the client
-				PrintWriter outToClient = new PrintWriter(clientSocket.getOutputStream(), true);
+				//PrintWriter outToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 				BufferedReader inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			){
 		//initiate convo with the client

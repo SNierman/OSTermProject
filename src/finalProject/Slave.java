@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Slave {
 	//take jobs
@@ -25,32 +26,29 @@ public class Slave {
 	
 	public static void main(String[] args) throws IOException {
 
-		// Hard code in port number if necessary:
+
 		args = new String[] { "30121" };
 
 		if (args.length != 1) {
 			System.err.println("Usage: java EchoServer <port number>");
 			System.exit(1);
 		}
+		
+		ArrayList<String> aJobsFromMaster = new ArrayList<String>();
+		ArrayList<String> bJobsFromMaster = new ArrayList<String>();
 
-		int portNumber = Integer.parseInt(args[0]);
-		try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
-				Socket clientSocket = serverSocket.accept();
-				PrintWriter responseWriter = new PrintWriter(clientSocket.getOutputStream(), true); //print to master?
-				BufferedReader requestReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) {//read from master? {
-			//do stuff here
-			
-			//get job- array list?
-			//sleep for a certain amount of time depending on if its job A or B
-			//after sleeping, tell master that job was completed
-			//go on to the next job
-			
-			//how will master be able to check what jobs slave has to do to know which job to sent where...?
-		} catch (IOException e) {
-			System.out.println(
-					"Exception caught when trying to listen on port " + portNumber + " or listening for a connection");
-			System.out.println(e.getMessage());
-		}
-
+		SlaveAFromMaster slaveAFromMaster = new SlaveAFromMaster(args, aJobsFromMaster);
+		SlaveBFromMaster slaveBFromMaster = new SlaveBFromMaster(args, bJobsFromMaster);
+		
+		SlaveAToMaster slaveAToMaster = new SlaveAToMaster(args, aJobsFromMaster);
+		SlaveBToMaster slaveBToMaster = new SlaveBToMaster(args, bJobsFromMaster);
+		
+		slaveAFromMaster.start();
+		slaveBFromMaster.start();
+		slaveAToMaster.start();
+		slaveBToMaster.start();
+		
+		
 	}
+
 }

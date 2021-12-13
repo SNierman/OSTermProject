@@ -16,14 +16,18 @@ public class Master {
 		WorkTimeCounter counterA = new WorkTimeCounter(Type.A);
 		WorkTimeCounter counterB = new WorkTimeCounter(Type.B);
 		
+		ArrayList<String> completedJobs = new ArrayList<String>();
+		
 		MasterFromClientThread masterFromClient = new MasterFromClientThread(jobsFromClient, args);
-		//MasterToSlave toSlaveA = new MasterToSlave(args, counterA, counterB, jobsFromClient, Type.A);
-		//MasterToSlave toSlaveB = new MasterToSlave(args, counterA, counterB, jobsFromClient, Type.B);
+		MasterToSlave toSlaves = new MasterToSlave(args, counterA, counterB, jobsFromClient);
+		MasterFromSlaves fromSlaves = new MasterFromSlaves(args, completedJobs);
 		
 		//ArrayLists created in master to determine who to send jobs to
 		//MasterToSlave toSlaveA = new MasterToSlave(jobsToSendToSlaveA);
 		//MasterToSlave toSlaveB = new MasterToSlave(jobsToSendToSlaveB);
 		masterFromClient.start();
+		toSlaves.start();
+		fromSlaves.start();
 		}
 	
 	//server to clients
@@ -60,7 +64,7 @@ public class Master {
 	 * 
 	 * fromSalve slaveA = new (sceonds, A, jobID/type(string))--> 
 	 * 
-	 * masterToclient(1)-->tells teh client the job completed.
+	 * masterToclient(1)-->tells the client the job completed.
 	
 	 * class masterToSlave
 	 * 
