@@ -24,7 +24,7 @@ public class SlaveAFromMaster extends Thread {
 	@Override
 	public void run() {
 		try(
-				ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
+				ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[1]));
 				Socket clientSocket = serverSocket.accept();
 				//reader/writer from the client
 				BufferedReader inFromMaster = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -42,7 +42,7 @@ public class SlaveAFromMaster extends Thread {
 		
 
 		catch (IOException e) {
-			System.out.println("Exception caught when trying to listen on port or listening for a connection");
+			System.out.println("Exception caught when trying to listen on port or listening for a connection SAFM");
 			System.out.println(e.getMessage());
 		}
 	}

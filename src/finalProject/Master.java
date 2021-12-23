@@ -10,7 +10,7 @@ public class Master {
 	//alert client when job is done
 	public static void main(String[] args) {
 		
-		args = new String[] { "30121" };
+		args = new String[] {"127.0.0.1", "30121"};
 		
 		ArrayList<String> jobsFromClient = new ArrayList<String>();
 		WorkTimeCounter counterA = new WorkTimeCounter(Type.A);
@@ -26,8 +26,9 @@ public class Master {
 		//MasterToSlave toSlaveA = new MasterToSlave(jobsToSendToSlaveA);
 		//MasterToSlave toSlaveB = new MasterToSlave(jobsToSendToSlaveB);
 		masterFromClient.start();
+
 		toSlaves.start();
-		fromSlaves.start();
+		//fromSlaves.start();
 		}
 	
 	//server to clients

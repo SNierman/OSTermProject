@@ -27,9 +27,9 @@ public class Slave {
 	public static void main(String[] args) throws IOException {
 
 
-		args = new String[] { "30121" };
+		args = new String[] {"127.0.0.1", "65534" };
 
-		if (args.length != 1) {
+		if (args.length != 2) {
 			System.err.println("Usage: java EchoServer <port number>");
 			System.exit(1);
 		}
@@ -44,9 +44,9 @@ public class Slave {
 		SlaveBToMaster slaveBToMaster = new SlaveBToMaster(args, bJobsFromMaster);
 		
 		slaveAFromMaster.start();
-		slaveBFromMaster.start();
+		//slaveBFromMaster.start();
 		slaveAToMaster.start();
-		slaveBToMaster.start();
+		//slaveBToMaster.start();
 		
 		
 	}

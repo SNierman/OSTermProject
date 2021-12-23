@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class UserToClientThread extends Thread {
 
 
-	ArrayList<String> jobs = new ArrayList<String>();
+	ArrayList<String> jobs;
 	
 	public UserToClientThread(ArrayList<String> jobs) {
 		this.jobs = jobs;
@@ -24,7 +24,7 @@ public class UserToClientThread extends Thread {
 
 			int id = 0;
 			// go until user types done
-			while (!(userInput = readsFromUser.readLine()).equals("Done")) {
+			while (!(userInput = readsFromUser.readLine()).equalsIgnoreCase("Done")) {
 
 				// input validation
 				while (!userInput.toUpperCase().equals(Type.A.toString()) && !userInput.toUpperCase().equals(Type.B.toString())) {
@@ -38,6 +38,7 @@ public class UserToClientThread extends Thread {
 				
 				
 			}
+			
 			this.stop();
 		} catch (IOException e) {
 			System.err.println("Couldn't get I/O for the connection.");

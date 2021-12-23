@@ -29,17 +29,15 @@ public class Client {
 			System.exit(1);
 		}
 
-		String hostName = args[0];
-		int portNumber = Integer.parseInt(args[1]);
 		
 		ArrayList<String> jobs = new ArrayList<String>();
 
-		
 		ClientToMasterThread clientToMasterThread = new ClientToMasterThread(jobs, args);
 		UserToClientThread userToClientThread = new UserToClientThread(jobs);
 		
-		clientToMasterThread.start();
 		userToClientThread.start();
+		clientToMasterThread.start();
+		
 	}
 }
 		/*

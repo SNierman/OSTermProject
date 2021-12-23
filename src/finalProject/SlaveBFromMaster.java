@@ -24,8 +24,10 @@ public class SlaveBFromMaster extends Thread {
 		@Override
 		public void run() {
 			try(
-					ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
+					ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[1]));
 					Socket clientSocket = serverSocket.accept();
+					//Socket clientSocket = new Socket(args[0], Integer.parseInt(args[1]));
+					//Socket clientSocket = serverSocket.accept();
 					//reader/writer from the client
 					BufferedReader inFromMaster = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 				){
@@ -43,7 +45,7 @@ public class SlaveBFromMaster extends Thread {
 			
 
 			catch (IOException e) {
-				System.out.println("Exception caught when trying to listen on port or listening for a connection");
+				System.out.println("Exception caught when trying to listen on port or listening for a connection SBFM");
 				System.out.println(e.getMessage());
 			}
 		}

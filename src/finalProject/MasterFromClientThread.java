@@ -20,7 +20,7 @@ public class MasterFromClientThread extends Thread {
 	@Override
 	public void run() {
 		try(//The master creates a server socket that connects to the clients
-				ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
+				ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[1]));
 	
 				//socket to connect to the client
 				Socket clientSocket = serverSocket.accept();
@@ -55,7 +55,7 @@ public class MasterFromClientThread extends Thread {
 	}
 		catch (IOException e) {
 			System.out.println(
-					"Exception caught when trying to listen on port or listening for a connection");
+					"Exception caught when trying to listen on port or listening for a connection. MASTER FROM CLIENT");
 			System.out.println(e.getMessage());
 		}		}
 }

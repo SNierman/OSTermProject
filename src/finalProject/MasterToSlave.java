@@ -29,8 +29,8 @@ public class MasterToSlave extends Thread {
 
 	@Override
 	public void run() {
-		try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
-				Socket clientSocket = serverSocket.accept();
+		try (Socket clientSocket = new Socket(args[0], Integer.parseInt("65534"));
+				//Socket clientSocket = serverSocket.accept();
 				PrintWriter toSlaveA = new PrintWriter(clientSocket.getOutputStream(), true);
 				PrintWriter toSlaveB = new PrintWriter(clientSocket.getOutputStream(), true);) {
 
@@ -47,7 +47,10 @@ public class MasterToSlave extends Thread {
 				// seconds, send the job to B
 				// if neg, and greater than -9, send job to A
 				// both less than 9, check the job type.
-
+				
+				System.out.println("Sending" + currJob + "to slave A");
+				toSlaveA.println(currJob);
+/**
 				if(currJobType.equals(Type.A)) {
 					
 					if (timeDifferenceFromOtherSlave >= 9) {
@@ -81,12 +84,12 @@ public class MasterToSlave extends Thread {
 					
 				}
 				jobsFromClient.remove(0);
-			}
+		*/	}
 
 		}
 
 		catch (IOException e) {
-			System.out.println("Exception caught when trying to listen on port or listening for a connection");
+			System.out.println("Exception caught when trying to listen on port or listening for a connection MASTER TO SLAVE");
 			System.out.println(e.getMessage());
 		}
 

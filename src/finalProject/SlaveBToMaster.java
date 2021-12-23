@@ -22,12 +22,15 @@ public class SlaveBToMaster extends Thread {
 	@Override
 	public void run() {
 
-		try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
+		try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[1]));
 				Socket clientSocket = serverSocket.accept();
+				
+				//Socket clientSocket = new Socket(args[0], Integer.parseInt(args[1]));
+				//Socket clientSocket = serverSocket.accept();
 				PrintWriter toMaster = new PrintWriter(clientSocket.getOutputStream(), true);) {
 
 			String currJob;
-			while (MasterToSlave.currentThread().isAlive()) {
+			while (MasterToSlave.currentThread().isAlive() && SlaveAToMaster.currentThread().isInterrupted()) {
 				while (!BJobs.isEmpty()) {
 
 					currJob = BJobs.get(0);
@@ -55,7 +58,7 @@ public class SlaveBToMaster extends Thread {
 
 			}
 		} catch (IOException e) {
-			System.out.println("Exception caught when trying to listen on port or listening for a connection");
+			System.out.println("Exception caught when trying to listen on port or listening for a connection SBTM");
 			System.out.println(e.getMessage());
 		}
 
