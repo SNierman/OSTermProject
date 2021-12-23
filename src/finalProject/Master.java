@@ -1,5 +1,9 @@
 package finalProject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -10,7 +14,14 @@ public class Master {
 	//alert client when job is done
 	public static void main(String[] args) {
 		
-		args = new String[] {"127.0.0.1", "30121"};
+		args = new String[] { "30121"};
+		
+		try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
+				Socket clientSocket = serverSocket.accept();
+				
+				PrintWriter writeToClient = new PrintWriter(clientSocket.getOutputStream(), true);
+				BufferedReader inFromClient = new BufferedReader(
+						new InputStreamReader(clientSocket.getInputStream()));) {
 		
 		ArrayList<String> jobsFromClient = new ArrayList<String>();
 		WorkTimeCounter counterA = new WorkTimeCounter(Type.A);
@@ -18,18 +29,18 @@ public class Master {
 		
 		ArrayList<String> completedJobs = new ArrayList<String>();
 		
-		MasterFromClientThread masterFromClient = new MasterFromClientThread(jobsFromClient, args);
-		MasterToSlave toSlaves = new MasterToSlave(args, counterA, counterB, jobsFromClient);
-		MasterFromSlaves fromSlaves = new MasterFromSlaves(args, completedJobs);
+		MasterFromClientThread masterFromClient = new MasterFromClientThread(jobsFromClient, inFromClient);
+		//MasterToSlave toSlaves = new MasterToSlave(args, counterA, counterB, jobsFromClient);
+		//MasterFromSlaves fromSlaves = new MasterFromSlaves(args, completedJobs);
 		
 		//ArrayLists created in master to determine who to send jobs to
 		//MasterToSlave toSlaveA = new MasterToSlave(jobsToSendToSlaveA);
 		//MasterToSlave toSlaveB = new MasterToSlave(jobsToSendToSlaveB);
 		masterFromClient.start();
 
-		toSlaves.start();
+		//toSlaves.start();
 		//fromSlaves.start();
-		}
+		
 	
 	//server to clients
 		//Socket clientSocket1 = serverSocket.accept();
@@ -79,5 +90,10 @@ public class Master {
 	 * 
 	 * */
 
-	
+	} catch (IOException e) {
+		System.out.println(
+				"Exception caught when trying to listen on port or listening for a connection");
+		System.out.println(e.getMessage());
+	}
+	}	
 }

@@ -39,7 +39,7 @@ public class UserToClientThread extends Thread {
 				
 			}
 			
-			this.stop();
+			//this.stop();
 		} catch (IOException e) {
 			System.err.println("Couldn't get I/O for the connection.");
 			System.exit(1);

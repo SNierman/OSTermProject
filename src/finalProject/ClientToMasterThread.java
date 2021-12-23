@@ -13,37 +13,32 @@ public class ClientToMasterThread extends Thread {
 	//what is the point of this arrayList?
 	private ArrayList<String> jobsSentToMaster = new ArrayList<>();
 	
-	String[] args;
 	ArrayList<String> jobs;
+	private PrintWriter writeToMaster;
 	
-	
-	public ClientToMasterThread(ArrayList<String> jobs, String[] args) {
+	public ClientToMasterThread(ArrayList<String> jobs, PrintWriter writeToMaster) {
 		this.jobs = jobs;
-		this.args = args;
+		this.writeToMaster = writeToMaster;
+
 	}
 	
 	@Override
 	public void run() {
-		try (Socket clientSocket = new Socket(args[0], Integer.parseInt(args[1]));
-				PrintWriter writeToMaster = new PrintWriter(clientSocket.getOutputStream(), true);) // talks to server;) // reads from server
-				{
+		
 			// while jobs are greater than 0- when the job gets finished, user will remove it from the arrayList
-			// and while the user is not done giving jobs because he could still give jobs even if they are all completed
+			
+		// and while the user is not done giving jobs because he could still give jobs even if they are all completed
 		while (jobs.size() > 0 || UserToClientThread.currentThread().isAlive()) { 
 			for (int i = 0; i < jobs.size(); i++) {
 				if (!jobsSentToMaster.contains(jobs.get(i))) {
 					System.out.println("Sending over job " + jobs.get(i));
+					
+				    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
 					writeToMaster.println(jobs.get(i));
 					jobsSentToMaster.add(jobs.get(i));
 				}
 			}
 		}
-		}catch (UnknownHostException e) {
-			System.err.println("Don't know about host ");
-			System.exit(1);
-		} catch (IOException e) {
-			System.err.println("Couldn't get I/O for the connection");
-			System.exit(1);
-		}
+
 	}
 }
