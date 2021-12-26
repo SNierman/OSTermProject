@@ -16,6 +16,7 @@ public class Master {
 		
 		args = new String[] { "30121"};
 		
+		while(true) {
 		try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
 				Socket clientSocket = serverSocket.accept();
 				
@@ -95,5 +96,5 @@ public class Master {
 				"Exception caught when trying to listen on port or listening for a connection");
 		System.out.println(e.getMessage());
 	}
-	}	
+	}	}
 }

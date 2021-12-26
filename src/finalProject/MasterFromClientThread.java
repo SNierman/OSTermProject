@@ -42,8 +42,10 @@ public class MasterFromClientThread extends Thread {
 		}*/
 		String job;
 		try {
+			System.out.print("in MFCT");
 	        while ((job = inFromClient.readLine()) != null) {
 	            System.out.println(job);
+	            System.out.print("in MFCT- while loop");
 	        }
 	    } catch (IOException ex) {
 	        
