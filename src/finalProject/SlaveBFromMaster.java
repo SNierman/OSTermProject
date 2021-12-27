@@ -8,47 +8,35 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class SlaveBFromMaster extends Thread {
-		
-		private final Type TYPE = Type.B;
-		String [] args;
-		private ArrayList<String> bJobsFromMaster;
 
-		
-		public SlaveBFromMaster(String[] args, ArrayList<String> bJobsFromMaster) {
-			
-			this.args = args;
-			this.bJobsFromMaster = bJobsFromMaster;
-		}
+	private final Type TYPE = Type.B;
+	private BufferedReader bReadFromMaster;
+	private ArrayList<String> bJobsFromMaster;
 
-			
-		@Override
-		public void run() {
-			try(
-					ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[1]));
-					Socket clientSocket = serverSocket.accept();
-					//Socket clientSocket = new Socket(args[0], Integer.parseInt(args[1]));
-					//Socket clientSocket = serverSocket.accept();
-					//reader/writer from the client
-					BufferedReader inFromMaster = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-				){
-				
-				String currJob = null;
-				while((currJob = inFromMaster.readLine()) != null) {
-					
+	public SlaveBFromMaster(BufferedReader bReadFromMaster, ArrayList<String> bJobsFromMaster) {
+
+		this.bReadFromMaster = bReadFromMaster;
+		this.bJobsFromMaster = bJobsFromMaster;
+	}
+
+	@Override
+	public void run() {
+		try {
+
+			String currJob = null;
+			while (MasterToSlave.currentThread().isAlive()) {
+				while ((currJob = bReadFromMaster.readLine()) != null) {
+
 					bJobsFromMaster.add(currJob);
 					System.out.println("Slave B Recieved Job: " + currJob);
-					
-					
-				}
-				
-			}
-			
 
-			catch (IOException e) {
-				System.out.println("Exception caught when trying to listen on port or listening for a connection SBFM");
-				System.out.println(e.getMessage());
+				}
 			}
 		}
+
+		catch (IOException e) {
+			System.out.println("Exception caught when trying to listen on port or listening for a connection SBFM");
+			System.out.println(e.getMessage());
+		}
+	}
 }
-
-

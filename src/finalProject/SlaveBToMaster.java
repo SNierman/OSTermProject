@@ -9,12 +9,12 @@ import java.util.ArrayList;
 public class SlaveBToMaster extends Thread {
 
 	private final Type TYPE = Type.B;
-	private String[] args;
+	private PrintWriter bWriteToMaster;
 	private ArrayList<String> BJobs;
 
-	public SlaveBToMaster(String[] args, ArrayList<String> BJobs) {
+	public SlaveBToMaster(PrintWriter bWriteToMaster, ArrayList<String> BJobs) {
 
-		this.args = args;
+		this.bWriteToMaster = bWriteToMaster;
 		this.BJobs = BJobs;
 
 	}
@@ -22,15 +22,8 @@ public class SlaveBToMaster extends Thread {
 	@Override
 	public void run() {
 
-		try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[1]));
-				Socket clientSocket = serverSocket.accept();
-				
-				//Socket clientSocket = new Socket(args[0], Integer.parseInt(args[1]));
-				//Socket clientSocket = serverSocket.accept();
-				PrintWriter toMaster = new PrintWriter(clientSocket.getOutputStream(), true);) {
-
 			String currJob;
-			while (MasterToSlave.currentThread().isAlive() && SlaveAToMaster.currentThread().isInterrupted()) {
+			while (MasterToSlave.currentThread().isAlive()) {
 				while (!BJobs.isEmpty()) {
 
 					currJob = BJobs.get(0);
@@ -52,15 +45,11 @@ public class SlaveBToMaster extends Thread {
 					}
 					
 					System.out.println("Slave B Completed Job: " + currJob);
-					toMaster.println(currJob);
+					bWriteToMaster.println(currJob);
 					BJobs.remove(0);
 				}
 
 			}
-		} catch (IOException e) {
-			System.out.println("Exception caught when trying to listen on port or listening for a connection SBTM");
-			System.out.println(e.getMessage());
-		}
 
 	}
 }

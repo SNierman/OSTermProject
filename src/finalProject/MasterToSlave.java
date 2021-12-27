@@ -12,15 +12,17 @@ public class MasterToSlave extends Thread {
 
 	// we will try to make one thread that will send to both slaves
 
-	private final String[] args;
+	private PrintWriter writeToSlaveA;
+	private PrintWriter writeToSlaveB;
 	private ArrayList<String> jobsFromClient;
 	private WorkTimeCounter counterA;
 	private WorkTimeCounter counterB;
 	// private ArrayList<String> jobsSentToSlave;
 
-	public MasterToSlave(String[] args, WorkTimeCounter counterA, WorkTimeCounter counterB,
-			ArrayList<String> jobsFromClient) {
-		this.args = args;
+	public MasterToSlave(PrintWriter writeToSlaveA, PrintWriter writeToSlaveB, WorkTimeCounter counterA,
+			WorkTimeCounter counterB, ArrayList<String> jobsFromClient) {
+		this.writeToSlaveA = writeToSlaveA;
+		this.writeToSlaveB = writeToSlaveB;
 		this.jobsFromClient = jobsFromClient;
 		this.counterA = counterA;
 		this.counterB = counterB;
@@ -29,68 +31,62 @@ public class MasterToSlave extends Thread {
 
 	@Override
 	public void run() {
-		try (Socket clientSocket = new Socket(args[0], Integer.parseInt("65534"));
-				//Socket clientSocket = serverSocket.accept();
-				PrintWriter toSlaveA = new PrintWriter(clientSocket.getOutputStream(), true);
-				PrintWriter toSlaveB = new PrintWriter(clientSocket.getOutputStream(), true);) {
 
-			String currJob;
-			int timeDifferenceFromOtherSlave;
-			Type currJobType;
-			while (MasterFromClientThread.currentThread().isAlive() && !jobsFromClient.isEmpty()) {
+		String currJob;
+		int timeDifferenceFromOtherSlave;
+		Type currJobType;
+		while (MasterFromClientThread.currentThread().isAlive() && !jobsFromClient.isEmpty()) {
 
-				currJob = jobsFromClient.get(0);
-				currJobType = Type.valueOf(currJob.substring(0,1));
-				timeDifferenceFromOtherSlave = counterA.getWorkTimeRemaining() - counterB.getWorkTimeRemaining();
+			currJob = jobsFromClient.get(0);
+			currJobType = Type.valueOf(currJob.substring(0, 1));
+			timeDifferenceFromOtherSlave = counterA.getWorkTimeRemaining() - counterB.getWorkTimeRemaining();
 
-				// if A is greater than B, it has more work to do. If it is behind by > 9
-				// seconds, send the job to B
-				// if neg, and greater than -9, send job to A
-				// both less than 9, check the job type.
-				
-				System.out.println("Sending" + currJob + "to slave A");
-				toSlaveA.println(currJob);
-/**
-				if(currJobType.equals(Type.A)) {
-					
-					if (timeDifferenceFromOtherSlave >= 9) {
+			// if A is greater than B, it has more work to do. If it is behind by > 9
+			// seconds, send the job to B
+			// if neg, and greater than -9, send job to A
+			// both less than 9, check the job type.
 
-						toSlaveB.println(currJob);
-						counterB.addNonOptimalJob();
-						
-					}
-					
-					else {
-						toSlaveA.println(currJob);
-						counterA.addOptimalJob();
-					}
-					
+			System.out.println("Sending" + currJob + "to slave A");
+			writeToSlaveA.println(currJob);
+
+			if (currJobType.equals(Type.A)) {
+
+				if (timeDifferenceFromOtherSlave >= 9) {
+
+					System.out.println("Sending" + currJob + "to slave B");
+					writeToSlaveB.println(currJob);
+					counterB.addNonOptimalJob();
+
 				}
-				
+
 				else {
-					
-					if (timeDifferenceFromOtherSlave <= -9) {
-
-						toSlaveA.println(currJob);
-						counterA.addNonOptimalJob();
-					}
-					
-					else {
-						
-						toSlaveB.println(currJob);
-						counterB.addOptimalJob();
-						
-					}
-					
+					System.out.println("Sending" + currJob + "to slave A");
+					writeToSlaveA.println(currJob);
+					counterA.addOptimalJob();
 				}
+
+			}
+
+			else {
+
+				if (timeDifferenceFromOtherSlave <= -9) {
+					System.out.println("Sending" + currJob + "to slave A");
+					writeToSlaveA.println(currJob);
+					counterA.addNonOptimalJob();
+				}
+
+				else {
+					System.out.println("Sending" + currJob + "to slave B");
+					writeToSlaveB.println(currJob);
+					counterB.addOptimalJob();
+
+				}
+
+			}
+			synchronized (jobsFromClient) {
 				jobsFromClient.remove(0);
-		*/	}
+			}
 
-		}
-
-		catch (IOException e) {
-			System.out.println("Exception caught when trying to listen on port or listening for a connection MASTER TO SLAVE");
-			System.out.println(e.getMessage());
 		}
 
 	}

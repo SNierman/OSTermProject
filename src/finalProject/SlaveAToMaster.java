@@ -10,12 +10,12 @@ package finalProject;
 	public class SlaveAToMaster extends Thread {
 
 		private final Type TYPE = Type.A;
-		private String[] args;
+		private PrintWriter aWriteToMaster;
 		private ArrayList<String> AJobs;
 
-		public SlaveAToMaster(String[] args, ArrayList<String> AJobs) {
+		public SlaveAToMaster(PrintWriter aWriteToMaster, ArrayList<String> AJobs) {
 
-			this.args = args;
+			this.aWriteToMaster = aWriteToMaster;
 			this.AJobs = AJobs;
 
 		}
@@ -23,15 +23,8 @@ package finalProject;
 		@Override
 		public void run() {
 
-			try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[1]));
-					Socket clientSocket = serverSocket.accept();
-					
-					//Socket clientSocket = new Socket(args[0], Integer.parseInt(args[1]));
-					//Socket clientSocket = serverSocket.accept();
-					PrintWriter toMaster = new PrintWriter(clientSocket.getOutputStream(), true);) {
-
 				String currJob;
-				while (MasterToSlave.currentThread().isAlive() && SlaveBToMaster.currentThread().isInterrupted()) {
+				while (MasterToSlave.currentThread().isAlive()) {
 					while (!AJobs.isEmpty()) {
 
 						currJob = AJobs.get(0);
@@ -53,15 +46,11 @@ package finalProject;
 						}
 						
 						System.out.println("Slave A Completed Job: " + currJob);
-						toMaster.println(currJob);
+						aWriteToMaster.println(currJob);
 						AJobs.remove(0);
 					}
 
 				}
-			} catch (IOException e) {
-				System.out.println("Exception caught when trying to listen on port or listening for a connection SATM");
-				System.out.println(e.getMessage());
-			}
 
 		}
 	}

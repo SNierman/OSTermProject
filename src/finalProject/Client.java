@@ -24,7 +24,6 @@ public class Client {
 	public static void main(String[] args) {
 
 		args = new String[] { "127.0.0.1", "30121" };
-		Lock lock = new Lock();
 		
 		
 		try (Socket clientSocket = new Socket(args[0], Integer.parseInt(args[1])); 
@@ -38,11 +37,15 @@ public class Client {
 
 			ArrayList<String> jobs = new ArrayList<String>();
 
-			ClientToMasterThread clientToMasterThread = new ClientToMasterThread(jobs, writeToMaster, lock);
+			ClientToMasterThread clientToMasterThread = new ClientToMasterThread(jobs, writeToMaster);
 			UserToClientThread userToClientThread = new UserToClientThread(jobs);
 
 			userToClientThread.start();
 			clientToMasterThread.start();
+			
+			userToClientThread.join();
+			clientToMasterThread.join();
+			
 
 		} catch (UnknownHostException e) {
 			System.err.println("Don't know about host ");
@@ -50,7 +53,10 @@ public class Client {
 		}
 		catch (IOException e) {
 			 System.err.println("Couldn't get I/O for the connection");
-			 System.exit(1); }
+			 System.exit(1); } catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
 /*
