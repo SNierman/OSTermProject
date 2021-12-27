@@ -1,6 +1,7 @@
 package finalProject;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -21,15 +22,14 @@ public class Master {
 				Socket clientSocket = serverSocket.accept();
 				
 				PrintWriter writeToClient = new PrintWriter(clientSocket.getOutputStream(), true);
-				BufferedReader inFromClient = new BufferedReader(
-						new InputStreamReader(clientSocket.getInputStream()));) {
+				BufferedReader inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));){
 		
 		ArrayList<String> jobsFromClient = new ArrayList<String>();
 		WorkTimeCounter counterA = new WorkTimeCounter(Type.A);
 		WorkTimeCounter counterB = new WorkTimeCounter(Type.B);
 		
 		ArrayList<String> completedJobs = new ArrayList<String>();
-		
+	
 		MasterFromClientThread masterFromClient = new MasterFromClientThread(jobsFromClient, inFromClient);
 		//MasterToSlave toSlaves = new MasterToSlave(args, counterA, counterB, jobsFromClient);
 		//MasterFromSlaves fromSlaves = new MasterFromSlaves(args, completedJobs);
@@ -37,6 +37,7 @@ public class Master {
 		//ArrayLists created in master to determine who to send jobs to
 		//MasterToSlave toSlaveA = new MasterToSlave(jobsToSendToSlaveA);
 		//MasterToSlave toSlaveB = new MasterToSlave(jobsToSendToSlaveB);
+	
 		masterFromClient.start();
 
 		//toSlaves.start();
@@ -96,5 +97,6 @@ public class Master {
 				"Exception caught when trying to listen on port or listening for a connection");
 		System.out.println(e.getMessage());
 	}
-	}	}
+	}	
+	}
 }

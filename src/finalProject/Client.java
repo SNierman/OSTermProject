@@ -24,6 +24,8 @@ public class Client {
 	public static void main(String[] args) {
 
 		args = new String[] { "127.0.0.1", "30121" };
+		Lock lock = new Lock();
+		
 		
 		try (Socket clientSocket = new Socket(args[0], Integer.parseInt(args[1])); 
 				PrintWriter writeToMaster = new PrintWriter(clientSocket.getOutputStream(), true); 
@@ -36,7 +38,7 @@ public class Client {
 
 			ArrayList<String> jobs = new ArrayList<String>();
 
-			ClientToMasterThread clientToMasterThread = new ClientToMasterThread(jobs, writeToMaster);
+			ClientToMasterThread clientToMasterThread = new ClientToMasterThread(jobs, writeToMaster, lock);
 			UserToClientThread userToClientThread = new UserToClientThread(jobs);
 
 			userToClientThread.start();

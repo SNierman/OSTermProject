@@ -1,6 +1,7 @@
 package finalProject;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -13,6 +14,7 @@ public class MasterFromClientThread extends Thread {
 
 	private BufferedReader inFromClient;
 	private ArrayList<String> jobsFromClient;
+	
 	public MasterFromClientThread(ArrayList<String> jobsFromClient,  BufferedReader inFromClient) {
 		this.jobsFromClient = jobsFromClient;
 		this.inFromClient = inFromClient;
@@ -42,14 +44,20 @@ public class MasterFromClientThread extends Thread {
 		}*/
 		String job;
 		try {
+			while(ClientToMasterThread.currentThread().isAlive()) {
 			System.out.print("in MFCT");
-	        while ((job = inFromClient.readLine()) != null) {
+			synchronized(inFromClient) {
+	        while (((job = inFromClient.readLine()) != null)&&(inFromClient.ready())) {
+	        	
 	            System.out.println(job);
 	            System.out.print("in MFCT- while loop");
 	        }
+			}
+	        }
+			
+
 	    } catch (IOException ex) {
 	        
-	    }
 			/**
 			try {
 				String job;
@@ -67,5 +75,5 @@ public class MasterFromClientThread extends Thread {
 				e.printStackTrace();
 			}*/
 	}
-		
+	}	
 }

@@ -12,14 +12,14 @@ public class ClientToMasterThread extends Thread {
 
 	//what is the point of this arrayList?
 	private ArrayList<String> jobsSentToMaster = new ArrayList<>();
-	
+	private Lock lock;
 	ArrayList<String> jobs;
 	private PrintWriter writeToMaster;
 	
-	public ClientToMasterThread(ArrayList<String> jobs, PrintWriter writeToMaster) {
+	public ClientToMasterThread(ArrayList<String> jobs, PrintWriter writeToMaster, Lock lock) {
 		this.jobs = jobs;
 		this.writeToMaster = writeToMaster;
-
+		this.lock = lock;
 	}
 	
 	@Override
@@ -32,10 +32,14 @@ public class ClientToMasterThread extends Thread {
 			for (int i = 0; i < jobs.size(); i++) {
 				if (!jobsSentToMaster.contains(jobs.get(i))) {
 					System.out.println("Sending over job " + jobs.get(i));
+					synchronized(writeToMaster){
+						// Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+						writeToMaster.println();
+						writeToMaster.println(jobs.get(i));
 					
-				    Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-					writeToMaster.println(jobs.get(i));
-					jobsSentToMaster.add(jobs.get(i));
+						writeToMaster.flush();
+						jobsSentToMaster.add(jobs.get(i));
+					}
 				}
 			}
 		}
