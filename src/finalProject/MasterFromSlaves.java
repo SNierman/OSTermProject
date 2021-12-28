@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 public class MasterFromSlaves extends Thread {
 
-	private String [] args;
 	private ArrayList<String> completedJobs;
 	private BufferedReader inFromSlave;
 	

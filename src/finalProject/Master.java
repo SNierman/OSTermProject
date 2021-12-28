@@ -46,16 +46,19 @@ public class Master {
 			 jobsFromClient);
 			 MasterFromSlaves fromSlaveA = new MasterFromSlaves(inFromSlaveA, completedJobs);
 			 MasterFromSlaves fromSlaveB = new MasterFromSlaves(inFromSlaveB, completedJobs);
+			 MasterToClient masterToClient = new MasterToClient(writeToClient, completedJobs);
 
 			masterFromClient.start();
 			toSlaves.start();
 			fromSlaveA.start();
 			fromSlaveB.start();
+			masterToClient.start();
 			
 			masterFromClient.join();
 			toSlaves.join(); 
 			fromSlaveA.join();
 			fromSlaveB.join();
+			masterToClient.join();
 
 			// server to clients
 			// Socket clientSocket1 = serverSocket.accept();

@@ -31,7 +31,7 @@ public class Client {
 				BufferedReader readFromMaster = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) {
 
 			if (args.length != 2) {
-				System.err.println("Usage: java EchoClient <host name> <port number>");
+				System.err.println("Invalid args");
 				System.exit(1);
 			}
 
@@ -39,12 +39,16 @@ public class Client {
 
 			ClientToMasterThread clientToMasterThread = new ClientToMasterThread(jobs, writeToMaster);
 			UserToClientThread userToClientThread = new UserToClientThread(jobs);
+			
+			ClientFromMaster clientFromMaster = new ClientFromMaster(readFromMaster);
 
 			userToClientThread.start();
 			clientToMasterThread.start();
+			clientFromMaster.start();
 			
 			userToClientThread.join();
 			clientToMasterThread.join();
+			clientFromMaster.join();
 			
 
 		} catch (UnknownHostException e) {
