@@ -26,14 +26,16 @@ public class Slave {
 	
 	public static void main(String[] args) throws IOException {
 
-		args = new String[] { "127.0.0.1", "30121" };
+		args = new String[] { "127.0.0.1", "30122"};
 		
 		
 		try (Socket slaveSocket = new Socket(args[0], Integer.parseInt(args[1])); 
 				PrintWriter aWriteToMaster = new PrintWriter(slaveSocket.getOutputStream(), true); 
 				BufferedReader aReadFromMaster = new BufferedReader(new InputStreamReader(slaveSocket.getInputStream()));) {
-			PrintWriter bWriteToMaster = new PrintWriter(slaveSocket.getOutputStream(), true); 
-			BufferedReader bReadFromMaster = new BufferedReader(new InputStreamReader(slaveSocket.getInputStream())); {
+			
+			Socket slaveSocket2 = new Socket(args[0], Integer.parseInt(args[1]));
+			PrintWriter bWriteToMaster = new PrintWriter(slaveSocket2.getOutputStream(), true); 
+			BufferedReader bReadFromMaster = new BufferedReader(new InputStreamReader(slaveSocket2.getInputStream())); {
 
 			if (args.length != 2) {
 				System.err.println("Usage: java EchoClient <host name> <port number>");
@@ -49,15 +51,15 @@ public class Slave {
 		SlaveAToMaster slaveAToMaster = new SlaveAToMaster(aWriteToMaster, aJobsFromMaster);
 		SlaveBToMaster slaveBToMaster = new SlaveBToMaster(bWriteToMaster, bJobsFromMaster);
 		
-		slaveAFromMaster.start();
-		slaveBFromMaster.start();
-		//slaveAToMaster.start();
-		//slaveBToMaster.start();
+		//slaveAFromMaster.start();
+		//slaveBFromMaster.start();
+		slaveAToMaster.start();
+		slaveBToMaster.start();
 		
-		slaveAFromMaster.join();
-		slaveBFromMaster.join();
-		//slaveAToMaster.join();
-		//slaveBToMaster.join();
+		//slaveAFromMaster.join();
+		//slaveBFromMaster.join();
+		slaveAToMaster.join();
+		slaveBToMaster.join();
 		
 	}}catch (UnknownHostException e) {
 		System.err.println("Don't know about host ");

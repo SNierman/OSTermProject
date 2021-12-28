@@ -22,7 +22,8 @@ package finalProject;
 
 		@Override
 		public void run() {
-
+			System.out.println("SATM");
+				//aWriteToMaster.println("slave a connected");
 				String currJob;
 				while (MasterToSlave.currentThread().isAlive()) {
 					while (!AJobs.isEmpty()) {

@@ -21,7 +21,8 @@ public class SlaveBToMaster extends Thread {
 
 	@Override
 	public void run() {
-
+		System.out.println("SBTM");
+		//bWriteToMaster.println("slave b connected");
 			String currJob;
 			while (MasterToSlave.currentThread().isAlive()) {
 				while (!BJobs.isEmpty()) {

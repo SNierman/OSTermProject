@@ -18,9 +18,12 @@ public class Master {
 		args = new String[] { "30121" };
 
 		try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
+				ServerSocket serverSocket2 = new ServerSocket(30122);
+				//ServerSocket serverSocket3 = new ServerSocket(30123);
 				Socket clientSocket = serverSocket.accept();
-				Socket slaveASocket = serverSocket.accept();
-				Socket slaveBSocket = serverSocket.accept();
+				Socket slaveASocket = serverSocket2.accept();
+				Socket slaveBSocket = serverSocket2.accept();
+				
 				PrintWriter writeToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 				BufferedReader inFromClient = new BufferedReader(
 						new InputStreamReader(clientSocket.getInputStream()));
@@ -41,17 +44,18 @@ public class Master {
 			MasterFromClientThread masterFromClient = new MasterFromClientThread(jobsFromClient, inFromClient);
 			MasterToSlave toSlaves = new MasterToSlave(writeToSlaveA, writeToSlaveB, counterA, counterB,
 			 jobsFromClient);
-			// MasterFromSlaves fromSlaves = new MasterFromSlaves(args, completedJobs);
-
-			// ArrayLists created in master to determine who to send jobs to
-			// MasterToSlave toSlaveA = new MasterToSlave(jobsToSendToSlaveA);
-			// MasterToSlave toSlaveB = new MasterToSlave(jobsToSendToSlaveB);
+			 MasterFromSlaves fromSlaveA = new MasterFromSlaves(inFromSlaveA, completedJobs);
+			 MasterFromSlaves fromSlaveB = new MasterFromSlaves(inFromSlaveB, completedJobs);
 
 			masterFromClient.start();
 			toSlaves.start();
+			fromSlaveA.start();
+			fromSlaveB.start();
+			
 			masterFromClient.join();
-			toSlaves.join();
-			// fromSlaves.start();
+			toSlaves.join(); 
+			fromSlaveA.join();
+			fromSlaveB.join();
 
 			// server to clients
 			// Socket clientSocket1 = serverSocket.accept();

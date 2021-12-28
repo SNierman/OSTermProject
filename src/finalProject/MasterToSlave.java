@@ -35,10 +35,10 @@ public class MasterToSlave extends Thread {
 		String currJob;
 		int timeDifferenceFromOtherSlave;
 		Type currJobType;
-		while (MasterFromClientThread.currentThread().isAlive() && !jobsFromClient.isEmpty()) {
-
+		while (MasterFromClientThread.currentThread().isAlive()) {
+			while(!jobsFromClient.isEmpty()) {
 			currJob = jobsFromClient.get(0);
-			currJobType = Type.valueOf(currJob.substring(0, 1));
+			currJobType = Type.valueOf(currJob.substring(0, 1).toUpperCase());
 			timeDifferenceFromOtherSlave = counterA.getWorkTimeRemaining() - counterB.getWorkTimeRemaining();
 
 			// if A is greater than B, it has more work to do. If it is behind by > 9
@@ -46,9 +46,7 @@ public class MasterToSlave extends Thread {
 			// if neg, and greater than -9, send job to A
 			// both less than 9, check the job type.
 
-			System.out.println("Sending" + currJob + "to slave A");
-			writeToSlaveA.println(currJob);
-
+			
 			if (currJobType.equals(Type.A)) {
 
 				if (timeDifferenceFromOtherSlave >= 9) {
@@ -90,5 +88,5 @@ public class MasterToSlave extends Thread {
 		}
 
 	}
-
+	}
 }
