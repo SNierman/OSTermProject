@@ -31,7 +31,7 @@ package finalProject;
 						currJob = AJobs.get(0);
 
 						try {
-							if (Type.valueOf(currJob.substring(0, 1)).equals(TYPE)) {
+							if (Type.valueOf(currJob.substring(0, 1).toUpperCase()).equals(TYPE)) {
 
 								Thread.sleep(2000);
 								

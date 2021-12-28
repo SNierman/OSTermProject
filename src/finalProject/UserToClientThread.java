@@ -33,7 +33,7 @@ public class UserToClientThread extends Thread {
 					userInput = readsFromUser.readLine();
 				}
 
-				String job = userInput + String.valueOf(id++);
+				String job = userInput.toUpperCase() + String.valueOf(id++);
 				jobs.add(job);
 				
 				

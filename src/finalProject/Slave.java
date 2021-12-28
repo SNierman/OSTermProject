@@ -51,13 +51,13 @@ public class Slave {
 		SlaveAToMaster slaveAToMaster = new SlaveAToMaster(aWriteToMaster, aJobsFromMaster);
 		SlaveBToMaster slaveBToMaster = new SlaveBToMaster(bWriteToMaster, bJobsFromMaster);
 		
-		//slaveAFromMaster.start();
-		//slaveBFromMaster.start();
+		slaveAFromMaster.start();
+		slaveBFromMaster.start();
 		slaveAToMaster.start();
 		slaveBToMaster.start();
 		
-		//slaveAFromMaster.join();
-		//slaveBFromMaster.join();
+		slaveAFromMaster.join();
+		slaveBFromMaster.join();
 		slaveAToMaster.join();
 		slaveBToMaster.join();
 		
