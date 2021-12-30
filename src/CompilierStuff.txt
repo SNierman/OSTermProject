@@ -1,14 +1,12 @@
 C:\Users\tzipo\eclipse-workspace\OSTermProject\src\finalProject>
 
 Client:
-javac Client.java ClientToMasterThread.java UserToClientThread.java Type.java
+javac Client.java ClientToMasterThread.java UserToClientThread.java Type.java ClientFromMaster.java MasterToClient.java MasterFromSlaves.java
 
 Master:
- javac Master.java MasterFromClientThread.java WorkTimeCounter.java MasterToSlave.java 
-MasterFromSlaves.java Type.java
+ javac Master.java UserToClientThread.java MasterFromClientThread.java WorkTimeCounter.java MasterToSlave.java MasterFromSlaves.java Type.java MasterToClient.java ClientToMasterThread.java
 
 Slave:
- javac Slave.java SlaveAFromMaster.java SlaveBFromMaster.java SlaveAToMaster.java  
-SlaveBToMaster.java Type.java MasterToSlave.java WorkTimeCounter.java MasterFromClientThread.java
+ javac Slave.java UserToClientThread.java SlaveAFromMaster.java SlaveBFromMaster.java SlaveAToMaster.java SlaveBToMaster.java Type.java MasterToSlave.java WorkTimeCounter.java MasterFromClientThread.java ClientToMasterThread.java
 
 java finalProject.Master 30121

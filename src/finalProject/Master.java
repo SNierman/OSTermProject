@@ -15,12 +15,14 @@ public class Master {
 	// alert client when job is done
 	public static void main(String[] args) {
 
-		args = new String[] { "30121" };
+		args = new String[] { "30121" }; 
 
 		try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
 				ServerSocket serverSocket2 = new ServerSocket(30122);
 				//ServerSocket serverSocket3 = new ServerSocket(30123);
 				Socket clientSocket = serverSocket.accept();
+				Socket client2Socket = serverSocket.accept();
+				
 				Socket slaveASocket = serverSocket2.accept();
 				Socket slaveBSocket = serverSocket2.accept();
 				
