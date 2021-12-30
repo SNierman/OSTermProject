@@ -28,7 +28,8 @@ public class Client {
 		
 		try (Socket clientSocket = new Socket(args[0], Integer.parseInt(args[1])); 
 				PrintWriter writeToMaster = new PrintWriter(clientSocket.getOutputStream(), true); 
-				BufferedReader readFromMaster = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) {
+				BufferedReader readFromMaster = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				) {
 
 			if (args.length != 2) {
 				System.err.println("Invalid args");

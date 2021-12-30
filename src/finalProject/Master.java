@@ -15,52 +15,73 @@ public class Master {
 	// alert client when job is done
 	public static void main(String[] args) {
 
-		args = new String[] { "30121" }; 
+		args = new String[] { "30121" };
 
 		try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
 				ServerSocket serverSocket2 = new ServerSocket(30122);
-				//ServerSocket serverSocket3 = new ServerSocket(30123);
+				// ServerSocket serverSocket3 = new ServerSocket(30123);
 				Socket clientSocket = serverSocket.accept();
 				Socket client2Socket = serverSocket.accept();
-				
+
 				Socket slaveASocket = serverSocket2.accept();
 				Socket slaveBSocket = serverSocket2.accept();
-				
-				PrintWriter writeToClient = new PrintWriter(clientSocket.getOutputStream(), true);
-				BufferedReader inFromClient = new BufferedReader(
-						new InputStreamReader(clientSocket.getInputStream()));
-				
+
+				PrintWriter writeToClient1 = new PrintWriter(clientSocket.getOutputStream(), true);
+				BufferedReader inFromClient1 = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				PrintWriter writeToClient2 = new PrintWriter(client2Socket.getOutputStream(), true);
+				BufferedReader inFromClient2 = new BufferedReader(
+						new InputStreamReader(client2Socket.getInputStream()));
+
 				PrintWriter writeToSlaveA = new PrintWriter(slaveASocket.getOutputStream(), true);
-				BufferedReader inFromSlaveA = new BufferedReader(
-						new InputStreamReader(slaveASocket.getInputStream()));
+				BufferedReader inFromSlaveA = new BufferedReader(new InputStreamReader(slaveASocket.getInputStream()));
 				PrintWriter writeToSlaveB = new PrintWriter(slaveBSocket.getOutputStream(), true);
 				BufferedReader inFromSlaveB = new BufferedReader(
 						new InputStreamReader(slaveBSocket.getInputStream()));) {
-			
-			ArrayList<String> jobsFromClient = new ArrayList<String>();
+
+			ArrayList<String> jobsFromClient1 = new ArrayList<String>();
+			ArrayList<String> jobsFromClient2 = new ArrayList<String>();
 			WorkTimeCounter counterA = new WorkTimeCounter(Type.A);
 			WorkTimeCounter counterB = new WorkTimeCounter(Type.B);
 
-			ArrayList<String> completedJobs = new ArrayList<String>();
+			ArrayList<String> completedJobsClient1 = new ArrayList<String>();
+			ArrayList<String> completedJobsClient2 = new ArrayList<String>();
 
-			MasterFromClientThread masterFromClient = new MasterFromClientThread(jobsFromClient, inFromClient);
-			MasterToSlave toSlaves = new MasterToSlave(writeToSlaveA, writeToSlaveB, counterA, counterB,
-			 jobsFromClient);
-			 MasterFromSlaves fromSlaveA = new MasterFromSlaves(inFromSlaveA, completedJobs);
-			 MasterFromSlaves fromSlaveB = new MasterFromSlaves(inFromSlaveB, completedJobs);
-			 MasterToClient masterToClient = new MasterToClient(writeToClient, completedJobs);
+			MasterFromClientThread masterFromClient1 = new MasterFromClientThread(jobsFromClient1, inFromClient1);
+			MasterFromClientThread masterFromClient2 = new MasterFromClientThread(jobsFromClient2, inFromClient2);
+			MasterToSlave toSlavesClient1 = new MasterToSlave(writeToSlaveA, writeToSlaveB, counterA, counterB,
+					jobsFromClient1);
+			MasterToSlave toSlavesClient2 = new MasterToSlave(writeToSlaveA, writeToSlaveB, counterA, counterB,
+					jobsFromClient2);
 
-			masterFromClient.start();
-			toSlaves.start();
-			fromSlaveA.start();
-			fromSlaveB.start();
-			masterToClient.start();
-			
-			masterFromClient.join();
-			toSlaves.join(); 
-			fromSlaveA.join();
-			fromSlaveB.join();
-			masterToClient.join();
+			MasterFromSlaves fromSlaveAClient1 = new MasterFromSlaves(inFromSlaveA, completedJobsClient1);
+			MasterFromSlaves fromSlaveBClient1 = new MasterFromSlaves(inFromSlaveB, completedJobsClient1);
+			MasterToClient masterToClient1 = new MasterToClient(writeToClient1, completedJobsClient1);
+
+			MasterFromSlaves fromSlaveAClient2 = new MasterFromSlaves(inFromSlaveA, completedJobsClient2);
+			MasterFromSlaves fromSlaveBClient2 = new MasterFromSlaves(inFromSlaveB, completedJobsClient2);
+			MasterToClient masterToClient2 = new MasterToClient(writeToClient2, completedJobsClient2);
+
+			masterFromClient1.start();
+			toSlavesClient1.start();
+			fromSlaveAClient1.start();
+			fromSlaveBClient1.start();
+			masterToClient1.start();
+			masterFromClient2.start();
+			toSlavesClient2.start();
+			fromSlaveAClient2.start();
+			fromSlaveBClient2.start();
+			masterToClient2.start();
+
+			masterFromClient1.join();
+			toSlavesClient1.join();
+			fromSlaveAClient1.join();
+			fromSlaveBClient1.join();
+			masterToClient2.join();
+			masterFromClient2.join();
+			toSlavesClient2.join();
+			fromSlaveAClient2.join();
+			fromSlaveBClient2.join();
+			masterToClient2.join();
 
 			// server to clients
 			// Socket clientSocket1 = serverSocket.accept();

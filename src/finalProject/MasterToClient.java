@@ -23,6 +23,7 @@ public class MasterToClient extends Thread {
 					completedJobs.remove(0);
 				}
 			}
+			writeToClient.println("All jobs completed. Have a great day!");
 		}
 	}
 
