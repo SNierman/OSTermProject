@@ -1,23 +1,16 @@
 package finalProject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 
+//one thread connects to both slaves
 public class MasterToSlave extends Thread {
-
-	// we will try to make one thread that will send to both slaves
 
 	private PrintWriter writeToSlaveA;
 	private PrintWriter writeToSlaveB;
 	private ArrayList<String> jobsFromClient;
 	private WorkTimeCounter counterA;
 	private WorkTimeCounter counterB;
-	// private ArrayList<String> jobsSentToSlave;
 
 	public MasterToSlave(PrintWriter writeToSlaveA, PrintWriter writeToSlaveB, WorkTimeCounter counterA,
 			WorkTimeCounter counterB, ArrayList<String> jobsFromClient) {
@@ -35,58 +28,68 @@ public class MasterToSlave extends Thread {
 		String currJob;
 		int timeDifferenceFromOtherSlave;
 		Type currJobType;
-		while (MasterFromClientThread.currentThread().isAlive()) {
-			while(!jobsFromClient.isEmpty()) {
-			currJob = jobsFromClient.get(0);
-			currJobType = Type.valueOf(currJob.substring(0, 1).toUpperCase());
-			timeDifferenceFromOtherSlave = counterA.getWorkTimeRemaining() - counterB.getWorkTimeRemaining();
 
-			// if A is greater than B, it has more work to do. If it is behind by > 9
-			// seconds, send the job to B
-			// if neg, and greater than -9, send job to A
-			// both less than 9, check the job type.
+		// keep connection while master may still receive a job from client
+		while (MasterFromClient.currentThread().isAlive()) {
 
-			
-			if (currJobType.equals(Type.A)) {
+			while (!jobsFromClient.isEmpty()) {
+				
+				currJob = jobsFromClient.get(0);
+				currJobType = Type.valueOf(currJob.substring(0, 1).toUpperCase());
+				
+				//calculate the time difference of work time between the slaves
+				timeDifferenceFromOtherSlave = counterA.getWorkTimeRemaining() - counterB.getWorkTimeRemaining();
 
-				if (timeDifferenceFromOtherSlave >= 9) {
+				//Calculate where to send the job:
+				//there is an 8 second time difference between the optimal and non optimal 
+				//slave completing a job so 8 second lag can determine efficiency 
+				
+				
+				// if slave A's work time is greater than B by over 8 seconds, send the job to B
+				// if slave B's work time is greater than A by over 8 seconds, send the job to A
+				// if difference is less or equal to 8, check the job type and send to correct slave
+				if (currJobType.equals(Type.A)) {
 
-					System.out.println("Sending" + currJob + "to slave B");
-					writeToSlaveB.println(currJob);
-					counterB.addNonOptimalJob();
+					if (timeDifferenceFromOtherSlave > 8) {
+
+						System.out.println("Sending" + currJob + "to slave B");
+						writeToSlaveB.println(currJob);
+						counterB.addNonOptimalJob();
+
+					}
+
+					else {
+						System.out.println("Sending" + currJob + "to slave A");
+						writeToSlaveA.println(currJob);
+						counterA.addOptimalJob();
+					}
 
 				}
 
 				else {
-					System.out.println("Sending" + currJob + "to slave A");
-					writeToSlaveA.println(currJob);
-					counterA.addOptimalJob();
-				}
 
-			}
+					if (timeDifferenceFromOtherSlave < -8) {
+						System.out.println("Sending" + currJob + "to slave A");
+						writeToSlaveA.println(currJob);
+						counterA.addNonOptimalJob();
+					}
 
-			else {
+					else {
+						System.out.println("Sending" + currJob + "to slave B");
+						writeToSlaveB.println(currJob);
+						counterB.addOptimalJob();
 
-				if (timeDifferenceFromOtherSlave <= -9) {
-					System.out.println("Sending" + currJob + "to slave A");
-					writeToSlaveA.println(currJob);
-					counterA.addNonOptimalJob();
-				}
-
-				else {
-					System.out.println("Sending" + currJob + "to slave B");
-					writeToSlaveB.println(currJob);
-					counterB.addOptimalJob();
+					}
 
 				}
+				
+				//remove the job from the list once send the job to a slave
+				synchronized (jobsFromClient) {
+					jobsFromClient.remove(0);
+				}
 
-			}
-			synchronized (jobsFromClient) {
-				jobsFromClient.remove(0);
 			}
 
 		}
-
-	}
 	}
 }

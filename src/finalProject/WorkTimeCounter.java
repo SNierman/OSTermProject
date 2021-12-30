@@ -2,12 +2,10 @@ package finalProject;
 
 public class WorkTimeCounter {
 	
-	private Type type;
 	private int workTimeRemaining;
 	
-	public WorkTimeCounter (Type type) {
-		
-		this.type = type;
+	public WorkTimeCounter () {
+
 		this.workTimeRemaining = 0;
 	}
 

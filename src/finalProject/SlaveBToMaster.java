@@ -1,9 +1,6 @@
 package finalProject;
 
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 
 public class SlaveBToMaster extends Thread {
@@ -21,36 +18,43 @@ public class SlaveBToMaster extends Thread {
 
 	@Override
 	public void run() {
-		System.out.println("SBTM");
-		//bWriteToMaster.println("slave b connected");
-			String currJob;
-			while (MasterToSlave.currentThread().isAlive()) {
-				while (!BJobs.isEmpty()) {
 
-					currJob = BJobs.get(0);
+		String currJob;
 
-					try {
-						if (Type.valueOf(currJob.substring(0, 1).toUpperCase()).equals(TYPE)) {
+		// thread continues while master sends over jobs
+		while (MasterToSlave.currentThread().isAlive()) {
+			while (!BJobs.isEmpty()) {
 
-							Thread.sleep(2000);
-							
-						}
+				currJob = BJobs.get(0);
 
-						else {
-							
-							Thread.sleep(10000);
-						}
-						
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+				// decide how long to work on job based on job type
+				try {
+					if (Type.valueOf(currJob.substring(0, 1).toUpperCase()).equals(TYPE)) {
+
+						Thread.sleep(2000);
+
 					}
-					
-					System.out.println("Slave B Completed Job: " + currJob);
-					bWriteToMaster.println(currJob);
-					BJobs.remove(0);
+
+					else {
+
+						Thread.sleep(10000);
+					}
+
+				} catch (InterruptedException e) {
+					System.out.println(e.getMessage());
 				}
 
+				// remove jobs so does not send same job twice
+				synchronized (BJobs) {
+					BJobs.remove(0);
+				}
+				
+				System.out.println("Slave B Completed Job: " + currJob);
+				bWriteToMaster.println("B" + currJob);
+
 			}
+
+		}
 
 	}
 }

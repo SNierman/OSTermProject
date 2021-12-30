@@ -1,7 +1,6 @@
 package finalProject;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -10,55 +9,63 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Master {
-	// take in jobs
-	// assign it to slave
-	// alert client when job is done
+
 	public static void main(String[] args) {
 
-		args = new String[] { "30121" };
+		//two port numbers, one for the clients and one for the slaves
+		args = new String[] { "30121" , "30122" };
 
 		try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
-				ServerSocket serverSocket2 = new ServerSocket(30122);
-				// ServerSocket serverSocket3 = new ServerSocket(30123);
+				ServerSocket serverSocket2 = new ServerSocket(Integer.parseInt(args[1]));
+				
+				//accept two clients connections
 				Socket clientSocket = serverSocket.accept();
 				Socket client2Socket = serverSocket.accept();
 
+				//accept two slave connections
 				Socket slaveASocket = serverSocket2.accept();
 				Socket slaveBSocket = serverSocket2.accept();
 
+				//writers/readers for client connections
 				PrintWriter writeToClient1 = new PrintWriter(clientSocket.getOutputStream(), true);
 				BufferedReader inFromClient1 = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 				PrintWriter writeToClient2 = new PrintWriter(client2Socket.getOutputStream(), true);
 				BufferedReader inFromClient2 = new BufferedReader(
 						new InputStreamReader(client2Socket.getInputStream()));
 
+				//writers/readers for slave connections
 				PrintWriter writeToSlaveA = new PrintWriter(slaveASocket.getOutputStream(), true);
 				BufferedReader inFromSlaveA = new BufferedReader(new InputStreamReader(slaveASocket.getInputStream()));
 				PrintWriter writeToSlaveB = new PrintWriter(slaveBSocket.getOutputStream(), true);
 				BufferedReader inFromSlaveB = new BufferedReader(
 						new InputStreamReader(slaveBSocket.getInputStream()));) {
 
+			//global list to access jobs taken from clients to give them to the slaves
 			ArrayList<String> jobsFromClient1 = new ArrayList<String>();
 			ArrayList<String> jobsFromClient2 = new ArrayList<String>();
-			WorkTimeCounter counterA = new WorkTimeCounter(Type.A);
-			WorkTimeCounter counterB = new WorkTimeCounter(Type.B);
+			
+			//keeps track of slave's current workload (in seconds)
+			WorkTimeCounter counterA = new WorkTimeCounter();
+			WorkTimeCounter counterB = new WorkTimeCounter();
 
+			//global list to access completed jobs from slaves to give them to the clients
 			ArrayList<String> completedJobsClient1 = new ArrayList<String>();
 			ArrayList<String> completedJobsClient2 = new ArrayList<String>();
 
-			MasterFromClientThread masterFromClient1 = new MasterFromClientThread(jobsFromClient1, inFromClient1);
-			MasterFromClientThread masterFromClient2 = new MasterFromClientThread(jobsFromClient2, inFromClient2);
+			//Initialize threads
+			MasterFromClient masterFromClient1 = new MasterFromClient(jobsFromClient1, inFromClient1);
+			MasterFromClient masterFromClient2 = new MasterFromClient(jobsFromClient2, inFromClient2);
 			MasterToSlave toSlavesClient1 = new MasterToSlave(writeToSlaveA, writeToSlaveB, counterA, counterB,
 					jobsFromClient1);
 			MasterToSlave toSlavesClient2 = new MasterToSlave(writeToSlaveA, writeToSlaveB, counterA, counterB,
 					jobsFromClient2);
 
-			MasterFromSlaves fromSlaveAClient1 = new MasterFromSlaves(inFromSlaveA, completedJobsClient1);
-			MasterFromSlaves fromSlaveBClient1 = new MasterFromSlaves(inFromSlaveB, completedJobsClient1);
+			MasterFromSlave fromSlaveAClient1 = new MasterFromSlave(inFromSlaveA, completedJobsClient1, counterA, counterB);
+			MasterFromSlave fromSlaveBClient1 = new MasterFromSlave(inFromSlaveB, completedJobsClient1, counterA, counterB);
 			MasterToClient masterToClient1 = new MasterToClient(writeToClient1, completedJobsClient1);
 
-			MasterFromSlaves fromSlaveAClient2 = new MasterFromSlaves(inFromSlaveA, completedJobsClient2);
-			MasterFromSlaves fromSlaveBClient2 = new MasterFromSlaves(inFromSlaveB, completedJobsClient2);
+			MasterFromSlave fromSlaveAClient2 = new MasterFromSlave(inFromSlaveA, completedJobsClient2, counterA, counterB);
+			MasterFromSlave fromSlaveBClient2 = new MasterFromSlave(inFromSlaveB, completedJobsClient2, counterA, counterB);
 			MasterToClient masterToClient2 = new MasterToClient(writeToClient2, completedJobsClient2);
 
 			masterFromClient1.start();
@@ -82,48 +89,6 @@ public class Master {
 			fromSlaveAClient2.join();
 			fromSlaveBClient2.join();
 			masterToClient2.join();
-
-			// server to clients
-			// Socket clientSocket1 = serverSocket.accept();
-			// Socket clientSocket2 = serverSocket.accept();
-
-			// client to both slaves
-			// Socket clientSocket = new Socket(hostName, portNumber);
-
-			/**
-			 * The master is a server to the two clients. NEEDS: //Socket clientSocket1 =
-			 * serverSocket.accept(); //Socket clientSocket2 = serverSocket.accept();
-			 * ServerSocket serverSocket = new ServerSocket(port#)
-			 * 
-			 * The master is a Client to Slave A and B NEEDS: Socket clientSocket = new
-			 * Socket(hostName, portNumber); Socket clientSocket = new Socket(hostName,
-			 * portNumber);
-			 */
-
-			/**
-			 * class master + class Seconds private amtOFSeconds, String type. + slave gets
-			 * a job if its type +2 , else +10. Same for removal
-			 * 
-			 * + array list jobs- same one as masterFromClient
-			 * 
-			 * mastertToslave tosalveA = new (amntOfSondsvaraible, masterFrom Client, A)
-			 * --clinet connection tath it will set up will be to a slave A masterToSlave
-			 * toslaveB= new (amntOfSondsvaraible, masterFrom Client, B) --cleint connection
-			 * to a different slave B
-			 * 
-			 * fromSalve slaveA = new (sceonds, A, jobID/type(string))-->
-			 * 
-			 * masterToclient(1)-->tells the client the job completed.
-			 * 
-			 * class masterToSlave
-			 * 
-			 * the other option: masterToSlaves = new(arrayList)
-			 * 
-			 * connection to both slaves
-			 * 
-			 * class Slave thread slave to maste--> sends the master the job that completed
-			 * 
-			 */
 
 		} catch (IOException | InterruptedException e) {
 			System.out.println("Exception caught when trying to listen on port or listening for a connection");

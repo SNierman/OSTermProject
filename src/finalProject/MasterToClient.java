@@ -15,16 +15,23 @@ public class MasterToClient extends Thread {
 	
 	@Override
 	public void run() {
-		while(MasterFromSlaves.currentThread().isAlive()) {
+		
+		//keep up connection still slaves still have
+		while(MasterFromSlave.currentThread().isAlive()) {
+			
 			while (!completedJobs.isEmpty()) {
+				
+				
 				writeToClient.println(completedJobs.get(0));
 				System.out.println("Master returning completed job " + completedJobs.get(0));
+				
 				synchronized(completedJobs) {
 					completedJobs.remove(0);
 				}
 			}
-			writeToClient.println("All jobs completed. Have a great day!");
 		}
+		//Tell client all jobs are complete
+		writeToClient.println("All jobs completed. Have a great day!");
 	}
 
 }

@@ -2,7 +2,6 @@ package finalProject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class ClientFromMaster extends Thread {
 
@@ -14,17 +13,18 @@ public class ClientFromMaster extends Thread {
 	
 	@Override
 	public void run() {
+		
+		//Keep up connection while master is still sending jobs
 		while (MasterToClient.currentThread().isAlive()) {
+			
 			String jobFromMaster;
 			try {
 				while ((jobFromMaster = readFromMaster.readLine()) != null) {
 					System.out.println("Client received completed job " + jobFromMaster);
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			;
+				System.out.println(e.getMessage());
+			}	
 		}
 	}
 }
