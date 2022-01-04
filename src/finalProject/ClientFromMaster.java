@@ -20,7 +20,7 @@ public class ClientFromMaster extends Thread {
 			String jobFromMaster;
 			try {
 				while ((jobFromMaster = readFromMaster.readLine()) != null) {
-					System.out.println("Client received completed job " + jobFromMaster);
+					System.out.println("Client received completed job " + jobFromMaster.substring(1));
 				}
 			} catch (IOException e) {
 				System.out.println(e.getMessage());

@@ -8,10 +8,12 @@ public class MasterFromClient extends Thread {
 
 	private BufferedReader inFromClient;
 	private ArrayList<String> jobsFromClient;
+	private int clientNum;
 
-	public MasterFromClient(ArrayList<String> jobsFromClient, BufferedReader inFromClient) {
+	public MasterFromClient(ArrayList<String> jobsFromClient, BufferedReader inFromClient, int clientNum) {
 		this.jobsFromClient = jobsFromClient;
 		this.inFromClient = inFromClient;
+		this.clientNum = clientNum;
 	}
 
 	@Override
@@ -27,7 +29,7 @@ public class MasterFromClient extends Thread {
 
 				while ((job = inFromClient.readLine()) != null) {
 
-					System.out.println(job + "Recieved");
+					System.out.println("Master received from client: " + job);
 
 					//ensure do not add the word 'done' as a job to send to a slave
 					if (job.equalsIgnoreCase("done")) {
@@ -37,7 +39,7 @@ public class MasterFromClient extends Thread {
 					synchronized (jobsFromClient) {
 						
 						// add to global ArrayList of jobs
-						jobsFromClient.add(job);
+						jobsFromClient.add(clientNum + job);
 					}
 				}
 			}

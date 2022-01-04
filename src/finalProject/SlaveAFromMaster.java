@@ -23,12 +23,12 @@ public class SlaveAFromMaster extends Thread {
 			while (MasterToSlave.currentThread().isAlive()) {
 
 				while ((currJob = aReadFromMaster.readLine()) != null) {
-
+					String currJobString = currJob.substring(1);
 					synchronized (aJobsFromMaster) {
 						aJobsFromMaster.add(currJob);
 					}
 
-					System.out.println("Slave A Recieved Job: " + currJob);
+					System.out.println("Slave A received job: " + currJobString);
 
 				}
 			}

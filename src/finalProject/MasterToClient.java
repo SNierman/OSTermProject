@@ -23,7 +23,7 @@ public class MasterToClient extends Thread {
 				
 				
 				writeToClient.println(completedJobs.get(0));
-				System.out.println("Master returning completed job " + completedJobs.get(0));
+				System.out.println("Master returning completed job: " + completedJobs.get(0).substring(1));
 				
 				synchronized(completedJobs) {
 					completedJobs.remove(0);

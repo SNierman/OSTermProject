@@ -26,10 +26,10 @@ public class SlaveBToMaster extends Thread {
 			while (!BJobs.isEmpty()) {
 
 				currJob = BJobs.get(0);
-
+				String currJobString = currJob.substring(1);
 				// decide how long to work on job based on job type
 				try {
-					if (Type.valueOf(currJob.substring(0, 1).toUpperCase()).equals(TYPE)) {
+					if (Type.valueOf(currJob.substring(1, 2).toUpperCase()).equals(TYPE)) {
 
 						Thread.sleep(2000);
 
@@ -49,7 +49,7 @@ public class SlaveBToMaster extends Thread {
 					BJobs.remove(0);
 				}
 				
-				System.out.println("Slave B Completed Job: " + currJob);
+				System.out.println("Slave B completed job: " + currJobString);
 				bWriteToMaster.println("B" + currJob);
 
 			}

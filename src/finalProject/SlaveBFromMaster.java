@@ -24,12 +24,12 @@ public class SlaveBFromMaster extends Thread {
 			// keep up connection while master may still send more jobs
 			while (MasterToSlave.currentThread().isAlive()) {
 				while ((currJob = bReadFromMaster.readLine()) != null) {
-
+					String currJobString = currJob.substring(1);
 					synchronized (bJobsFromMaster) {
 						bJobsFromMaster.add(currJob);
 					}
 					
-					System.out.println("Slave B Recieved Job: " + currJob);
+					System.out.println("Slave B received job: " + currJobString);
 
 				}
 			}

@@ -33,6 +33,7 @@ public class Slave {
 				//global list of jobs from master
 				ArrayList<String> aJobsFromMaster = new ArrayList<String>();
 				ArrayList<String> bJobsFromMaster = new ArrayList<String>();
+				
 
 				//Initialize threads
 				SlaveAFromMaster slaveAFromMaster = new SlaveAFromMaster(aReadFromMaster, aJobsFromMaster);
@@ -40,12 +41,13 @@ public class Slave {
 
 				SlaveAToMaster slaveAToMaster = new SlaveAToMaster(aWriteToMaster, aJobsFromMaster);
 				SlaveBToMaster slaveBToMaster = new SlaveBToMaster(bWriteToMaster, bJobsFromMaster);
+				
 
 				slaveAFromMaster.start();
 				slaveBFromMaster.start();
 				slaveAToMaster.start();
 				slaveBToMaster.start();
-
+				
 				slaveAFromMaster.join();
 				slaveBFromMaster.join();
 				slaveAToMaster.join();

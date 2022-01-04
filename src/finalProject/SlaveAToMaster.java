@@ -26,10 +26,11 @@ public class SlaveAToMaster extends Thread {
 			while (!AJobs.isEmpty()) {
 
 				currJob = AJobs.get(0);
-
+				String currJobString = currJob.substring(1);
+				
 				// decide how long to work on job based on job type
 				try {
-					if (Type.valueOf(currJob.substring(0, 1).toUpperCase()).equals(TYPE)) {
+					if (Type.valueOf(currJob.substring(1, 2).toUpperCase()).equals(TYPE)) {
 						Thread.sleep(2000);
 					}
 
@@ -46,7 +47,7 @@ public class SlaveAToMaster extends Thread {
 					AJobs.remove(0);
 				}
 
-				System.out.println("Slave A Completed Job: " + currJob);
+				System.out.println("Slave A completed job: " + currJobString);
 				aWriteToMaster.println("A" + currJob);
 			}
 

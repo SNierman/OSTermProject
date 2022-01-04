@@ -35,7 +35,8 @@ public class MasterToSlave extends Thread {
 			while (!jobsFromClient.isEmpty()) {
 				
 				currJob = jobsFromClient.get(0);
-				currJobType = Type.valueOf(currJob.substring(0, 1).toUpperCase());
+				currJobType = Type.valueOf(currJob.substring(1, 2).toUpperCase());
+				String currJobString = currJob.substring(1);
 				
 				//calculate the time difference of work time between the slaves
 				timeDifferenceFromOtherSlave = counterA.getWorkTimeRemaining() - counterB.getWorkTimeRemaining();
@@ -52,14 +53,14 @@ public class MasterToSlave extends Thread {
 
 					if (timeDifferenceFromOtherSlave > 8) {
 
-						System.out.println("Sending" + currJob + "to slave B");
+						System.out.println("Sending " + currJobString + " to slave B");
 						writeToSlaveB.println(currJob);
 						counterB.addNonOptimalJob();
 
 					}
 
 					else {
-						System.out.println("Sending" + currJob + "to slave A");
+						System.out.println("Sending " + currJobString + " to slave A");
 						writeToSlaveA.println(currJob);
 						counterA.addOptimalJob();
 					}
@@ -69,13 +70,13 @@ public class MasterToSlave extends Thread {
 				else {
 
 					if (timeDifferenceFromOtherSlave < -8) {
-						System.out.println("Sending" + currJob + "to slave A");
+						System.out.println("Sending " + currJobString + " to slave A");
 						writeToSlaveA.println(currJob);
 						counterA.addNonOptimalJob();
 					}
 
 					else {
-						System.out.println("Sending" + currJob + "to slave B");
+						System.out.println("Sending " + currJobString + " to slave B");
 						writeToSlaveB.println(currJob);
 						counterB.addOptimalJob();
 
