@@ -29,18 +29,19 @@ public class Client {
 			// global ArrayList of jobs to get from user to clientToMaster Thread
 			ArrayList<String> jobs = new ArrayList<String>();
 
-			ClientToMaster clientToMasterThread = new ClientToMaster(jobs, writeToMaster);
-			UserToClient userToClientThread = new UserToClient(jobs);
+			ClientToMaster clientToMaster = new ClientToMaster(jobs, writeToMaster);
+			UserToClient userToClient = new UserToClient(jobs);
 
 			ClientFromMaster clientFromMaster = new ClientFromMaster(readFromMaster);
 
-			userToClientThread.start();
-			clientToMasterThread.start();
+			userToClient.start();
+			clientToMaster.start();
 			clientFromMaster.start();
 
-			userToClientThread.join();
-			clientToMasterThread.join();
+			userToClient.join();
+			clientToMaster.join();
 			clientFromMaster.join();
+			
 
 		} catch (UnknownHostException e) {
 			System.err.println("Don't know about host.");
