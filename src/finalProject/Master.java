@@ -84,6 +84,7 @@ public class Master {
 			fromSlaveA.join();
 			fromSlaveB.join();
 
+
 		} catch (IOException | InterruptedException e) {
 			System.out.println("Exception caught when trying to listen on port or listening for a connection");
 			System.out.println(e.getMessage());
